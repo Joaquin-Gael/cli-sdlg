@@ -1,5 +1,5 @@
 import pydantic
-from typing import (Tuple, List)
+from typing import (Any, List, Tuple)
 from pandas import DataFrame
 from tabulate import tabulate
 from colorama import (init, Fore, Back, Style)
@@ -7,23 +7,22 @@ from colorama import (init, Fore, Back, Style)
 init(autoreset=True)
 
 class UserValidationError(Exception):
-    def __init__(self, field:list[str], message:str, data:dict = None):
+    def __init__(self, field: list[str], message: str, data: dict = None):
         self.field = field
         self.message = message
         self.data = data
         if data is not None:
-            tabla = DataFrame(self.data, index=[0])
+            tabla = DataFrame([self.data])
             for header in tabla.columns:
                 if header not in self.field:
                     tabla.rename(columns={header: Fore.CYAN + header.upper() + Style.RESET_ALL}, inplace=True)
                 else:
                     tabla.rename(columns={header: Fore.RED + header.upper() + Style.RESET_ALL}, inplace=True)
-                
             tabla.index = [Fore.CYAN + str(i) + Style.RESET_ALL for i in tabla.index]
-            data = tabulate(tabla, headers='keys', tablefmt='pretty')
-            super().__init__(f"Error en el campo  {Fore.RED + str([param.upper() for param in self.field if param in self.field]) + Style.RESET_ALL}: {self.message}:\n{data}")
+            data_str = tabulate(tabla, headers='keys', tablefmt='pretty')
+            super().__init__(f"Error en el campo {Fore.RED + str([param.upper() for param in self.field]) + Style.RESET_ALL}: {self.message}:\n{data_str}")
         else:
-            super().__init__(f"Error en el campo  {Fore.RED + str([param.upper() for param in self.field if param in self.field]) + Style.RESET_ALL}: {self.message}")
+            super().__init__(f"Error en el campo {Fore.RED + str([param.upper() for param in self.field]) + Style.RESET_ALL}: {self.message}")
 
 # Models
 
@@ -64,3 +63,30 @@ class User(pydantic.BaseModel):
                 field = [error['loc'][0]]
                 message = error['msg']
                 raise UserValidationError(field, message)
+    
+    @classmethod
+    def tabla_users(cls, users_obj:list[Any]):
+        data = {
+                "id": [],
+                "DNI": [],
+                "name": [],
+                "lastname": [],
+                "username": [],
+                "email": [],
+                "password": [],
+                "phone": [],
+            }
+        for user_obj in users_obj:
+                data['id'].append(user_obj.id)
+                data['DNI'].append(user_obj.DNI)
+                data['name'].append(user_obj.name)
+                data['lastname'].append(user_obj.lastname)
+                data['username'].append(user_obj.username)
+                data['email'].append(user_obj.email)
+                data['password'].append(user_obj.password)
+                data['phone'].append(user_obj.phone)
+        data = DataFrame(data)
+        data.columns = [Fore.CYAN + header.upper() + Style.RESET_ALL for header in data.columns]
+        data.index = [Fore.CYAN + str(i) + Style.RESET_ALL for i in data.index]
+        tabla = tabulate(data, headers='keys', tablefmt='psql')
+        return tabla

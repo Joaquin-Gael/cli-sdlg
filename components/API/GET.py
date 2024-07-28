@@ -17,7 +17,7 @@ def user(url:str, data:dict = None):
         if data is not None:
             query = []
             for key, value in data.items():
-                query.append(f"{key}={value}")
+                query.append(f"{key}={value}") if value is not None else None
             query = "&".join(query)
             url = f"{url}/?{query}"
             print(url)
@@ -61,7 +61,7 @@ def users(url:str, data:dict = None):
         if data is not None:
             query = []
             for key, value in data.items():
-                query.append(f"{key}={value}")
+                query.append(f"{key}={value}") if value is not None else None
             query = "&".join(query)
             url = f"{url}/?{query}"
             print(url)
@@ -102,6 +102,126 @@ def users(url:str, data:dict = None):
                     "email": fake.email(),
                     "password": fake.password(),
                     "phone": fake.phone_number()
+                }
+            ]
+        }
+        if fake_responce['status_code'] == 200:
+            user_data = fake_responce['body']
+            return user_data
+        else:
+            return None
+    except Exception as err:
+        print(err)
+
+def turno(url:str, data:dict = None):
+    """_summary_
+
+    Args:
+        url (str): Url to send request
+        data (dict, optional): Parametes to send. Defaults to None.
+
+    Returns:
+        dict: responce data
+    """
+    try:
+        if data is not None:
+            query = []
+            for key, value in data.items():
+                query.append(f"{key}={value}") if value is not None else None
+            query = "&".join(query)
+            url = f"{url}/?{query}"
+            print(url)
+            #responce = requests.get(url)
+        else:
+            pass
+            #responce = requests.get(url)
+        #serialized_data = json.decoder(responce.json())
+        fake_responce={
+            "status_code":200,
+            "body":{
+                "id": fake.random_int(min=1, max=1000),
+                "userID": fake.random_int(min=1, max=1000),
+                "citaID": fake.random_int(min=1, max=1000),
+                "medicoID": fake.random_int(min=1, max=1000),
+                "motive": fake.sentence(nb_words=3),
+                "state": fake.random_element(elements=("Pendiente", "Confirmado", "Cancelado")),
+                "fecha": fake.date(pattern="%Y-%m-%d"),
+                "fecha_creacion": fake.date(pattern="%Y-%m-%d")
+            }
+        }
+        if fake_responce['status_code'] == 200:
+            user_data = fake_responce['body']
+            return user_data
+        else:
+            return None
+    except Exception as err:
+        print(err)
+
+def turnos(url:str, data:dict = None):
+    """_summary_
+
+    Args:
+        url (str): Url to send request
+        data (dict, optional): Parametes to send. Defaults to None.
+
+    Returns:
+        dict: responce data
+    """
+    try:
+        if data is not None:
+            query = []
+            for key, value in data.items():
+                query.append(f"{key}={value}") if value is not None else None
+            query = "&".join(query)
+            url = f"{url}/?{query}"
+            print(url)
+            #responce = requests.get(url)
+        else:
+            pass
+            #responce = requests.get(url)
+        #serialized_data = json.decoder(responce.json())
+        fake_responce={
+            "status_code":200,
+            "body":[
+                {
+                "id": fake.random_int(min=1, max=1000),
+                "userID": fake.random_int(min=1, max=1000),
+                "citaID": fake.random_int(min=1, max=1000),
+                "medicoID": fake.random_int(min=1, max=1000),
+                "motive": fake.sentence(nb_words=3),
+                "state": fake.random_element(elements=("Pendiente", "Confirmado", "Cancelado")),
+                "fecha": fake.date(pattern="%Y-%m-%d"),
+                "fecha_creacion": fake.date(pattern="%Y-%m-%d")
+                },
+                {
+                "id": fake.random_int(min=1, max=1000),
+                "userID": fake.random_int(min=1, max=1000),
+                "citaID": fake.random_int(min=1, max=1000),
+                "medicoID": fake.random_int(min=1, max=1000),
+                "motive": fake.sentence(nb_words=3),
+                "state": fake.random_element(elements=("Pendiente", "Confirmado", "Cancelado")),
+                "fecha": fake.date(pattern="%Y-%m-%d"),
+                "fecha_creacion": fake.date(pattern="%Y-%m-%d")
+                },
+                {
+                "id": fake.random_int(min=1, max=1000),
+                "userID": fake.random_int(min=1, max=1000),
+                "citaID": fake.random_int(min=1, max=1000),
+                "medicoID": fake.random_int(min=1, max=1000),
+                "motive": fake.sentence(nb_words=3),
+                "state": fake.random_element(elements=("Pendiente", "Confirmado", "Cancelado")),
+                "fecha": fake.date(pattern="%Y-%m-%d"),
+                "fecha_creacion": fake.date(pattern="%Y-%m-%d")
+                },
+                {
+                "id": fake.random_int(min=1, max=1000),
+                "userID": fake.random_int(min=1, max=1000),
+                "citaID": fake.random_int(min=1, max=1000),
+                "medicoID": fake.random_int(min=1, max=1000),
+                "motive": fake.sentence(nb_words=3),
+                "state": fake.random_element(elements=("Pendiente", "Confirmado", "Cancelado")),
+                "fecha": fake.date(pattern="%Y-%m-%d"),
+                "fecha_creacion": fake.date(pattern="%Y-%m-%d")
                 }
             ]
         }
