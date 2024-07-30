@@ -21,6 +21,9 @@ def get_user_by_id(id:int):
         data = CLI.get_user_by_id(id)
         click.echo(data.tabla())
     
+    except KeyboardInterrupt as stop:
+        click.echo(f"\n{Fore.BLUE + Style.BRIGHT}Ejecución cancelada por el usuario.{Style.RESET_ALL} {Fore.RED}Ctrl + C{Style.RESET_ALL}")
+    
     except Exception as e:
         click.echo(e)
 
@@ -32,6 +35,9 @@ def get_users(limit:int, offset:int):
         data = CLI.get_users_data({'limit':limit, 'offset':offset} if limit or offset else None)
         click.echo(data)
     
+    except KeyboardInterrupt as stop:
+        click.echo(f"\n{Fore.BLUE + Style.BRIGHT}Ejecución cancelada por el usuario.{Style.RESET_ALL} {Fore.RED}Ctrl + C{Style.RESET_ALL}")
+    
     except Exception as e:
         click.echo(e)
 
@@ -41,6 +47,9 @@ def get_turno_by_id(id:int):
     try:
         data = CLI.get_turno_by_id(id)
         click.echo(data.tabla())
+    
+    except KeyboardInterrupt as stop:
+        click.echo(f"\n{Fore.BLUE + Style.BRIGHT}Ejecución cancelada por el usuario.{Style.RESET_ALL} {Fore.RED}Ctrl + C{Style.RESET_ALL}")
     
     except Exception as e:
         click.echo(e)
@@ -55,6 +64,9 @@ def get_turnos(limit:int, offset:int, state:str, user_id:int):
         data = CLI.get_turnos_data({'limit':limit, 'offset':offset, 'state':state, 'user_id':user_id} if limit or offset or state or user_id else None)
         click.echo(data)
     
+    except KeyboardInterrupt as stop:
+        click.echo(f"\n{Fore.BLUE + Style.BRIGHT}Ejecución cancelada por el usuario.{Style.RESET_ALL} {Fore.RED}Ctrl + C{Style.RESET_ALL}")
+    
     except Exception as e:
         click.echo(e)
 
@@ -65,13 +77,13 @@ def run_server(port, host):
     port = port if port else 8000
     host = host if host else "127.0.0.1"
     try:
+        click.echo(f'\nURL: {Fore.YELLOW + f"http://{host}:{port}" + Style.RESET_ALL}')
         state = subprocess.run(
             ['streamlit', 'run', 'interface/main.py', '--server.port', str(port), '--server.address', str(host)],
             check=True
         )
         #click.echo(f'streamlit run interface/main.py --server.port {port} --server.address {host}')
         click.echo(state.stdout.decode())
-        click.echo(f'\nURL: {Fore.YELLOW + f"http://{host}:{port}" + Style.RESET_ALL}')
     
     except subprocess.CalledProcessError as e:
         click.echo("Error al ejecutar Streamlit:")
