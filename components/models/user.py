@@ -27,7 +27,7 @@ class UserValidationError(Exception):
 # Models
 
 class User(pydantic.BaseModel):
-    id: int
+    userID: int
     DNI: int
     name: str
     lastname: str
@@ -65,9 +65,10 @@ class User(pydantic.BaseModel):
                 raise UserValidationError(field, message)
     
     @classmethod
-    def tabla_users(cls, users_obj:list[Any]):
-        data = {
-                "id": [],
+    def dataFrame_users(cls, users_obj:list[Any]):
+        try:
+            data = {
+                "userID": [],
                 "DNI": [],
                 "name": [],
                 "lastname": [],
@@ -76,8 +77,8 @@ class User(pydantic.BaseModel):
                 "password": [],
                 "phone": [],
             }
-        for user_obj in users_obj:
-                data['id'].append(user_obj.id)
+            for user_obj in users_obj:
+                data['userID'].append(user_obj.userID)
                 data['DNI'].append(user_obj.DNI)
                 data['name'].append(user_obj.name)
                 data['lastname'].append(user_obj.lastname)
@@ -85,7 +86,14 @@ class User(pydantic.BaseModel):
                 data['email'].append(user_obj.email)
                 data['password'].append(user_obj.password)
                 data['phone'].append(user_obj.phone)
-        data = DataFrame(data)
+            data = DataFrame(data)
+            return data
+        except Exception as err:
+            print(f'Error en el dataframe user: {err}')
+
+    @classmethod
+    def tabla_users(cls, users_obj:list[Any]):
+        data = cls.dataFrame_users(users_obj)
         data.columns = [Fore.CYAN + header.upper() + Style.RESET_ALL for header in data.columns]
         data.index = [Fore.CYAN + str(i) + Style.RESET_ALL for i in data.index]
         tabla = tabulate(data, headers='keys', tablefmt='psql')

@@ -3,7 +3,7 @@ import faker as fk
 
 fake = fk.Faker()
 
-def user(url:str, data:dict = None):
+def user(url:str, data:dict | None = None):
     """_summary_
 
     Args:
@@ -21,33 +21,20 @@ def user(url:str, data:dict = None):
             query = "&".join(query)
             url = f"{url}/?{query}"
             print(url)
-            #responce = requests.get(url)
+            responce = requests.get(url)
         else:
             pass
-            #responce = requests.get(url)
-        #serialized_data = json.decoder(responce.json())
-        fake_responce = {
-            "status_code":200,
-            "body":{
-                "id": fake.random_int(min=1, max=1000),
-                "DNI": fake.random_int(min=10000000, max=99999999),
-                "name": fake.first_name(),
-                "lastname": fake.last_name(),
-                "username": fake.user_name(),
-                "email": fake.email(),
-                "password": fake.password(),
-                "phone": fake.phone_number()
-            }
-        }
-        if fake_responce['status_code'] == 200:
-            user_data = fake_responce['body']
+            responce = requests.get(url)
+
+        if responce.status_code == 200:
+            user_data = responce.json()
             return user_data
         else:
             return None
     except Exception as err:
         print(err)
 
-def users(url:str, data:dict = None):
+def users(url:str, data:dict | None = None):
     """_summary_
 
     Args:
@@ -69,12 +56,11 @@ def users(url:str, data:dict = None):
         else:
             pass
             #responce = requests.get(url)
-        #serialized_data = json.decoder(responce.json())
         fake_responce = {
             "status_code":200,
             "body":[
                 {
-                    "id": fake.random_int(min=1, max=1000),
+                    "userID": fake.random_int(min=1, max=1000),
                     "DNI": fake.random_int(min=10000000, max=99999999),
                     "name": fake.first_name(),
                     "lastname": fake.last_name(),
@@ -84,7 +70,7 @@ def users(url:str, data:dict = None):
                     "phone": fake.phone_number()
                 },
                 {
-                    "id": fake.random_int(min=1, max=1000),
+                    "userID": fake.random_int(min=1, max=1000),
                     "DNI": fake.random_int(min=10000000, max=99999999),
                     "name": fake.first_name(),
                     "lastname": fake.last_name(),
@@ -94,7 +80,7 @@ def users(url:str, data:dict = None):
                     "phone": fake.phone_number()
                 },
                 {
-                    "id": fake.random_int(min=1, max=1000),
+                    "userID": fake.random_int(min=1, max=1000),
                     "DNI": fake.random_int(min=10000000, max=99999999),
                     "name": fake.first_name(),
                     "lastname": fake.last_name(),
@@ -110,6 +96,11 @@ def users(url:str, data:dict = None):
             return user_data
         else:
             return None
+        #if responce.status_code == 200:
+        #    user_data = responce.json()
+        #    return user_data
+        #else:
+        #    return None
     except Exception as err:
         print(err)
 
