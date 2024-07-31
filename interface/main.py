@@ -16,7 +16,7 @@ if __name__ == '__main__':
             st.error('This is an error', icon="🚨")
     st.header('Users Table')
     st.table(
-        User.dataFrame_users(
+        User.data_frame_users(
             users_obj=[User.validate_user(user_data) for user_data in responce]
         )
     )

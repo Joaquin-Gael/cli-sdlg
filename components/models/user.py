@@ -64,7 +64,7 @@ class User(pydantic.BaseModel):
                 raise UserValidationError(field, message)
     
     @classmethod
-    def tabla_users(cls, users_obj: List[Any]):
+    def data_frame_users(cls, users_obj: List[Any]):
         data = {
             "userID": [],
             "dni": [],
@@ -95,6 +95,12 @@ class User(pydantic.BaseModel):
             data['last_logout'].append(user_obj.last_logout)
             data['imagen'].append(user_obj.imagen)
         data = DataFrame(data)
+        return data
+
+
+    @classmethod
+    def tabla_users(cls, users_obj: List[Any]):
+        data = cls.data_frame_users(users_obj=users_obj)
         data.columns = [Fore.CYAN + header.upper() + Style.RESET_ALL for header in data.columns]
         data.index = [Fore.CYAN + str(i) + Style.RESET_ALL for i in data.index]
         tabla = tabulate(data, headers='keys', tablefmt='psql')
