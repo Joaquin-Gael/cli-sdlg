@@ -1,13 +1,15 @@
 import pydantic
-from typing import (Any, List, Tuple)
+from typing import (Any, List, Tuple, Optional)
 from pandas import DataFrame
 from tabulate import tabulate
 from colorama import (init, Fore, Back, Style)
+import pydantic
+
 
 init(autoreset=True)
 
 class UserValidationError(Exception):
-    def __init__(self, field: list[str], message: str, data: dict = None):
+    def __init__(self, field: List[str], message: str, data: dict = None):
         self.field = field
         self.message = message
         self.data = data
@@ -24,20 +26,23 @@ class UserValidationError(Exception):
         else:
             super().__init__(f"Error en el campo {Fore.RED + str([param.upper() for param in self.field]) + Style.RESET_ALL}: {self.message}")
 
-# Models
-
 class User(pydantic.BaseModel):
     userID: int
-    DNI: int
-    name: str
-    lastname: str
-    username: str
-    email: pydantic.EmailStr
-    password: str
-    phone: str
-    
+    dni: str
+    nombre: str
+    apellido: str
+    fecha_nacimiento: Optional[str]
+    email: Optional[str]
+    telefono: Optional[str]
+    contraseña: str
+    is_active: bool
+    date_joined: str
+    last_login: Optional[str]
+    last_logout: Optional[str]
+    imagen: Optional[str]
+
     @classmethod
-    def validate_user(cls, user:dict):
+    def validate_user(cls, user: dict):
         try:
             return cls(**user)
         except pydantic.ValidationError as e:
@@ -45,12 +50,6 @@ class User(pydantic.BaseModel):
                 field = [error['loc'][0]]
                 message = error['msg']
                 raise UserValidationError(field, message, user)
-            
-    @pydantic.field_validator('*', mode='before')
-    def check_not_none(cls, v, field):
-        if v is None:
-            raise ValueError(f'{field.name} must not be None')
-        return v
     
     def tabla(self):
         try:
@@ -65,35 +64,37 @@ class User(pydantic.BaseModel):
                 raise UserValidationError(field, message)
     
     @classmethod
-    def dataFrame_users(cls, users_obj:list[Any]):
-        try:
-            data = {
-                "userID": [],
-                "DNI": [],
-                "name": [],
-                "lastname": [],
-                "username": [],
-                "email": [],
-                "password": [],
-                "phone": [],
-            }
-            for user_obj in users_obj:
-                data['userID'].append(user_obj.userID)
-                data['DNI'].append(user_obj.DNI)
-                data['name'].append(user_obj.name)
-                data['lastname'].append(user_obj.lastname)
-                data['username'].append(user_obj.username)
-                data['email'].append(user_obj.email)
-                data['password'].append(user_obj.password)
-                data['phone'].append(user_obj.phone)
-            data = DataFrame(data)
-            return data
-        except Exception as err:
-            print(f'Error en el dataframe user: {err}')
-
-    @classmethod
-    def tabla_users(cls, users_obj:list[Any]):
-        data = cls.dataFrame_users(users_obj)
+    def tabla_users(cls, users_obj: List[Any]):
+        data = {
+            "userID": [],
+            "dni": [],
+            "nombre": [],
+            "apellido": [],
+            "fecha_nacimiento": [],
+            "email": [],
+            "telefono": [],
+            "contraseña": [],
+            "is_active": [],
+            "date_joined": [],
+            "last_login": [],
+            "last_logout": [],
+            "imagen": []
+        }
+        for user_obj in users_obj:
+            data['userID'].append(user_obj.userID)
+            data['dni'].append(user_obj.dni)
+            data['nombre'].append(user_obj.nombre)
+            data['apellido'].append(user_obj.apellido)
+            data['fecha_nacimiento'].append(user_obj.fecha_nacimiento)
+            data['email'].append(user_obj.email)
+            data['telefono'].append(user_obj.telefono)
+            data['contraseña'].append(user_obj.contraseña)
+            data['is_active'].append(user_obj.is_active)
+            data['date_joined'].append(user_obj.date_joined)
+            data['last_login'].append(user_obj.last_login)
+            data['last_logout'].append(user_obj.last_logout)
+            data['imagen'].append(user_obj.imagen)
+        data = DataFrame(data)
         data.columns = [Fore.CYAN + header.upper() + Style.RESET_ALL for header in data.columns]
         data.index = [Fore.CYAN + str(i) + Style.RESET_ALL for i in data.index]
         tabla = tabulate(data, headers='keys', tablefmt='psql')

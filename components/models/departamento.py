@@ -1,13 +1,14 @@
 import pydantic
-from typing import (Any, Dict, List)
+from typing import (Any, List, Dict)
 from pandas import DataFrame
 from tabulate import tabulate
-from colorama import (init, Fore, Back, Style)
+from colorama import (init, Fore, Style)
+import pydantic
 
 init(autoreset=True)
 
-class TurnoValidationError(Exception):
-    def __init__(self, field: list[str], message: str, data: dict = None):
+class DepartamentoValidationError(Exception):
+    def __init__(self, field: List[str], message: str, data: dict = None):
         self.field = field
         self.message = message
         self.data = data
@@ -24,28 +25,22 @@ class TurnoValidationError(Exception):
         else:
             super().__init__(f"Error en el campo {Fore.RED + str([param.upper() for param in self.field]) + Style.RESET_ALL}: {self.message}")
 
-#Models
-
-class Turno(pydantic.BaseModel):
-    TurnoID: int
-    userID: int
-    citaID: int
-    medicoID: int
-    motivo: str
-    estado: str
-    fecha: str
-    fecha_created: str
+class Departamento(pydantic.BaseModel):
+    departamentoID: int
+    nombre: str
+    descripcion: str
+    ubicacionID: int
     
     @classmethod
-    def validate_turno(cls, turno: Dict[str, Any]):
+    def validate_departamento(cls, departamento: Dict[str, Any]):
         try:
-            return cls(**turno)
+            return cls(**departamento)
         except pydantic.ValidationError as e:
             for error in e.errors():
                 field = error['loc'][0]
                 message = error['msg']
-                value = turno.get(field, None)
-                raise TurnoValidationError(field, message, value)
+                value = departamento.get(field, None)
+                raise DepartamentoValidationError(field, message, value)
 
     def tabla(self):
         df = DataFrame([self.dict()])
@@ -54,26 +49,18 @@ class Turno(pydantic.BaseModel):
         print(table)
     
     @classmethod
-    def tabla_turnos(cls, turnos_obj: List[Any]):
+    def tabla_departamentos(cls, departamentos_obj: List[Any]):
         data = {
-            "TurnoID": [],
-            "userID": [],
-            "citaID": [],
-            "medicoID": [],
-            "motivo": [],
-            "estado": [],
-            "fecha": [],
-            "fecha_created": [],
+            "departamentoID": [],
+            "nombre": [],
+            "descripcion": [],
+            "ubicacionID": []
         }
-        for turno_obj in turnos_obj:
-            data['TurnoID'].append(turno_obj.TurnoID)
-            data['userID'].append(turno_obj.userID)
-            data['citaID'].append(turno_obj.citaID)
-            data['medicoID'].append(turno_obj.medicoID)
-            data['motivo'].append(turno_obj.motivo)
-            data['estado'].append(turno_obj.estado)
-            data['fecha'].append(turno_obj.fecha)
-            data['fecha_created'].append(turno_obj.fecha_created)
+        for departamento_obj in departamentos_obj:
+            data['departamentoID'].append(departamento_obj.departamentoID)
+            data['nombre'].append(departamento_obj.nombre)
+            data['descripcion'].append(departamento_obj.descripcion)
+            data['ubicacionID'].append(departamento_obj.ubicacionID)
         
         df = DataFrame(data)
         df.columns = [Fore.CYAN + header.upper() + Style.RESET_ALL for header in df.columns]

@@ -1,12 +1,13 @@
 import pydantic
-from typing import (Any, Dict, List)
+from typing import (Any, List, Dict)
 from pandas import DataFrame
 from tabulate import tabulate
-from colorama import (init, Fore, Back, Style)
+from colorama import (init, Fore, Style)
+import pydantic
 
 init(autoreset=True)
 
-class TurnoValidationError(Exception):
+class HorarioMedicoValidationError(Exception):
     def __init__(self, field: list[str], message: str, data: dict = None):
         self.field = field
         self.message = message
@@ -24,28 +25,27 @@ class TurnoValidationError(Exception):
         else:
             super().__init__(f"Error en el campo {Fore.RED + str([param.upper() for param in self.field]) + Style.RESET_ALL}: {self.message}")
 
-#Models
 
-class Turno(pydantic.BaseModel):
-    TurnoID: int
-    userID: int
-    citaID: int
+
+class HorarioMedico(pydantic.BaseModel):
+    horarioID: int
     medicoID: int
-    motivo: str
-    estado: str
-    fecha: str
-    fecha_created: str
+    dia: str
+    hora_inicio: str
+    hora_fin: str
+    especialidadID: int
+    departamentoID: int
     
     @classmethod
-    def validate_turno(cls, turno: Dict[str, Any]):
+    def validate_horario_medico(cls, horario_medico: Dict[str, Any]):
         try:
-            return cls(**turno)
+            return cls(**horario_medico)
         except pydantic.ValidationError as e:
             for error in e.errors():
                 field = error['loc'][0]
                 message = error['msg']
-                value = turno.get(field, None)
-                raise TurnoValidationError(field, message, value)
+                value = horario_medico.get(field, None)
+                raise HorarioMedicoValidationError(field, message, value)
 
     def tabla(self):
         df = DataFrame([self.dict()])
@@ -54,26 +54,24 @@ class Turno(pydantic.BaseModel):
         print(table)
     
     @classmethod
-    def tabla_turnos(cls, turnos_obj: List[Any]):
+    def tabla_horarios_medicos(cls, horarios_medicos_obj: List[Any]):
         data = {
-            "TurnoID": [],
-            "userID": [],
-            "citaID": [],
+            "horarioID": [],
             "medicoID": [],
-            "motivo": [],
-            "estado": [],
-            "fecha": [],
-            "fecha_created": [],
+            "dia": [],
+            "hora_inicio": [],
+            "hora_fin": [],
+            "especialidadID": [],
+            "departamentoID": []
         }
-        for turno_obj in turnos_obj:
-            data['TurnoID'].append(turno_obj.TurnoID)
-            data['userID'].append(turno_obj.userID)
-            data['citaID'].append(turno_obj.citaID)
-            data['medicoID'].append(turno_obj.medicoID)
-            data['motivo'].append(turno_obj.motivo)
-            data['estado'].append(turno_obj.estado)
-            data['fecha'].append(turno_obj.fecha)
-            data['fecha_created'].append(turno_obj.fecha_created)
+        for horario_medico_obj in horarios_medicos_obj:
+            data['horarioID'].append(horario_medico_obj.horarioID)
+            data['medicoID'].append(horario_medico_obj.medicoID)
+            data['dia'].append(horario_medico_obj.dia)
+            data['hora_inicio'].append(horario_medico_obj.hora_inicio)
+            data['hora_fin'].append(horario_medico_obj.hora_fin)
+            data['especialidadID'].append(horario_medico_obj.especialidadID)
+            data['departamentoID'].append(horario_medico_obj.departamentoID)
         
         df = DataFrame(data)
         df.columns = [Fore.CYAN + header.upper() + Style.RESET_ALL for header in df.columns]
