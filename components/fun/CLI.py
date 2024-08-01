@@ -13,12 +13,12 @@ import requests
 from tabulate import tabulate
 from colorama import (init, Fore, Back, Style)
 
-BASE_URL = 'http://127.0.0.1:8000/api'
+BASE_URL = 'http://127.0.0.1:8000/API'
 init(autoreset=True)
 
 def get_user_by_id(userID:int):
     try:
-        url = f"{BASE_URL}/users/{userID}"
+        url = f"{BASE_URL}/users/{userID}/"
         response = GET.user(url)
         if response is not None:
             user_obj = User.validate_user(response)
@@ -29,7 +29,7 @@ def get_user_by_id(userID:int):
 
 def get_users_data(query:dict):
     try:
-        url = f"{BASE_URL}/users"
+        url = f"{BASE_URL}/users/"
         response = GET.users(url, query)
         if response is not None:
             users_obj = [User.validate_user(user_data) for user_data in response]
