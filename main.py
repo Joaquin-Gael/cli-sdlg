@@ -32,9 +32,9 @@ def create_user(nombre: str, email: str, telefono: str, dni: str):
 #Obtener usuarios por ID
 @main.command()
 @click.option('--userID', '-i', type=int, required=True, help='ID del usuario')
-def get_user_by_id(id:int):
+def get_user_by_id(userid:int):
     try:
-        data = CLI.get_user_by_id(id)
+        data = CLI.get_user_by_id(userID=userid)
         click.echo(data.tabla())
     
     except Exception as e:
@@ -42,7 +42,7 @@ def get_user_by_id(id:int):
 
 @main.command()
 @click.option('--userID', '-i', type=int, required=True, help='ID del usuario')
-def delete_user(id: int):
+def delete_user(userID: int):
     result = delete_user(id)
     click.echo(result)
 
@@ -50,7 +50,7 @@ def delete_user(id: int):
 @click.option('--userID', '-i', type=int, required=True, help='ID del usuario')
 @click.option('--nombre', '-n', type=str, required=True, help='Nuevo nombre del usuario')
 @click.option('--email', '-e', type=str, required=True, help='Nuevo correo electrónico del usuario')
-def put_user(id: int, nombre: str, email: str):
+def put_user(userID: int, nombre: str, email: str):
     update_data = {'nombre': nombre, 'email': email}
     result = CLI.put_user(id, update_data)
     click.echo(result)
@@ -77,7 +77,7 @@ def get_users(limit:int, offset:int):
 @click.option('--telefono', '-t', type=str, required=False, help='Nuevo teléfono del usuario')
 @click.option('--contraseña', '-p', type=str, required=False, help='Nueva contraseña del usuario')
 @click.option('--is_admin', '-a', type=bool, required=False, help='Indica si el usuario es administrador')
-def patch_user(id: int, nombre: str, apellido: str, fecha_nacimiento: str, email: str, telefono: str, contraseña: str, is_admin: bool):
+def patch_user(userID: int, nombre: str, apellido: str, fecha_nacimiento: str, email: str, telefono: str, contraseña: str, is_admin: bool):
     try:
         update_data = {}
         if nombre:
@@ -564,9 +564,6 @@ def put_departamento(departamentoID: int, nombre: str, descripcion: str, ubicaci
     }
     result = CLI.put_department(departamentoID, update_data)
     click.echo(result)
-
-if __name__ == '__main__':
-    main()
 
 @main.command()
 @click.option('--PORT', '-P', type=int, required=False, help='Port of the grafic interface Default 8000')

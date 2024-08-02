@@ -7,7 +7,7 @@ from components.models.user import User
 from components.API import GET
 
 if __name__ == '__main__':
-    responce = GET.users(url='http://127.0.0.1:8000/users')
+    responce = GET.users(url='http://127.0.0.1:8000/API/users/')
     with st.sidebar:
         st.title('Hospital SDLG :blue[CLI]')
         if responce is not None:
