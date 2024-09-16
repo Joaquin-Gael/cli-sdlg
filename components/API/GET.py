@@ -1,4 +1,5 @@
 import requests, json, pydantic
+BASE_URL = 'http://127.0.0.1:8000/API'
 
 def user(url: str, data: dict = None):
     """Realiza una solicitud GET al endpoint de usuarios.
@@ -34,7 +35,7 @@ def users(url: str, data: dict = None):
     return user(url, data)
 
 
-def turno(url: str, data: dict = None):
+def turno(url: str = BASE_URL, data: dict = None):
     """Realiza una solicitud GET al endpoint de turnos.
 
     Args:
@@ -57,7 +58,7 @@ def turno(url: str, data: dict = None):
         print(f"Error: {err}")
         return None
 
-def turnos(url: str, data: dict = None):
+def turnos(url: str = BASE_URL, data: dict = None):
     """Realiza una solicitud GET al endpoint de turnos.
 
     Args:
@@ -67,7 +68,7 @@ def turnos(url: str, data: dict = None):
     Returns:
         dict: Datos de respuesta de la API.
     """
-    return turno(url, data)
+    return turno(url)
 
 def cita(url: str, data: dict = None):
     """Realiza una solicitud GET al endpoint de turnos.
@@ -139,7 +140,7 @@ def testimonios(url: str, data: dict = None):
     """
     return testimonio(url, data)
 
-def medico(url: str, data: dict = None):
+def medico(url: str = BASE_URL, data: dict = None):
     """Realiza una solicitud GET al endpoint de turnos.
 
     Args:
@@ -162,7 +163,7 @@ def medico(url: str, data: dict = None):
         print(f"Error: {err}")
         return None
     
-def medicos(url: str, data: dict = None):
+def medicos(url: str = BASE_URL, data: dict = None):
     """Realiza una solicitud GET al endpoint de turnos.
 
     Args:
@@ -172,7 +173,7 @@ def medicos(url: str, data: dict = None):
     Returns:
         dict: Datos de respuesta de la API.
     """
-    return medico(url, data)
+    return medico(url)
 
 def horario_medico(url: str, data: dict = None):
     """Realiza una solicitud GET al endpoint de turnos.
@@ -279,7 +280,7 @@ def departamentos(url: str, data: dict = None):
     """
     return departamento(url, data)
 
-def especialidad(url: str, data: dict = None):
+def especialidad(url: str = BASE_URL, data: dict = None):
     """Realiza una solicitud GET al endpoint de turnos.
 
     Args:
@@ -302,7 +303,7 @@ def especialidad(url: str, data: dict = None):
         print(f"Error: {err}")
         return None
     
-def especialidades(url: str, data: dict = None):
+def especialidades(url: str = BASE_URL, data: dict = None):
     """Realiza una solicitud GET al endpoint de turnos.
 
     Args:
